@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers config for the @astrojs/cloudflare adapter.
+  // Astro 6+: `main` is the adapter's unified entrypoint (handles both
+  // `astro dev` and deploy), NOT the pre-build dist/_worker.js path.
+  // Astro auto-provisions the IMAGES + SESSION bindings on deploy.
+  "name": "hydroflare",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "assets": {
+    "directory": "./dist"
+  }
+}
