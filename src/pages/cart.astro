@@ -1,0 +1,82 @@
+---
+import {
+  getCart,
+  getCartId,
+  createCartFormRegister,
+} from "@shopify/hydrogen";
+import Layout from "../layouts/Layout.astro";
+import {
+  viewStateFromCart,
+  renderErrorBanner,
+  renderLines,
+  renderDiscounts,
+  renderNote,
+  renderTotals,
+  renderCheckout,
+} from "../scripts/cart";
+
+const form = createCartFormRegister();
+const cartId = getCartId(Astro.request);
+const { cart } = await getCart(cartId, Astro.locals.storefront);
+const state = viewStateFromCart(cart);
+const hasItems = state.data.lines.nodes.length > 0;
+---
+
+<Layout title="Cart — Hydroflare">
+  <main class="container">
+    <h1 class="title">Your cart</h1>
+
+    <div id="cart-banner" set:html={renderErrorBanner(state)}></div>
+    <div id="cart-lines" set:html={renderLines(form, state)}></div>
+    <div
+      id="cart-footer"
+      style={hasItems ? undefined : "display:none"}
+      set:html={hasItems
+        ? renderDiscounts(form, state) + renderNote(form, state) + renderTotals(state) + renderCheckout(state)
+        : ""}
+    >
+    </div>
+  </main>
+</Layout>
+
+<script is:inline define:vars={{ CART_DATA: state.data }}>
+  window.__CART_DATA__ = CART_DATA;
+</script>
+
+<script>
+  import { mountCart } from "../scripts/cart";
+  import { initAnalyticsFromDom, getAnalytics, AnalyticsEvent } from "../lib/analytics";
+
+  const store = mountCart((window as any).__CART_DATA__, {
+    bannerEl: document.getElementById("cart-banner"),
+    linesEl: document.getElementById("cart-lines")!,
+    footerEl: document.getElementById("cart-footer"),
+  });
+
+  // Publish cart_viewed + keep analytics cart state in sync (deduped by updatedAt).
+  const shop = initAnalyticsFromDom();
+  const analytics = getAnalytics();
+  if (analytics && shop) {
+    const cart = (window as any).__CART_DATA__;
+    analytics.updateCart(cart);
+    analytics.publish(AnalyticsEvent.CART_VIEWED, {
+      cart,
+      prevCart: null,
+      url: window.location.href,
+      shop,
+    });
+    store.subscribe((state) => analytics?.updateCart(state.data as any));
+  }
+</script>
+
+<style>
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+  .title {
+    font-size: 1.75rem;
+    margin: 0 0 1.5rem;
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+import { gql } from "@shopify/hydrogen";
+import Layout from "../../layouts/Layout.astro";
+
+const COLLECTIONS_QUERY = gql(`
+  query Collections($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    collections(first: 50) {
+      nodes {
+        id
+        title
+        handle
+        image {
+          url
+          altText
+        }
+      }
+    }
+  }
+`);
+
+const { data } = await Astro.locals.storefront.graphql(COLLECTIONS_QUERY);
+const collections = data?.collections?.nodes ?? [];
+---
+
+<Layout>
+  <main class="container">
+    <h1 class="title">Collections</h1>
+    {
+      collections.length === 0 ? (
+        <p class="empty">No collections yet.</p>
+      ) : (
+        <ul class="grid">
+          {collections.map((collection) => (
+            <li>
+              <a class="card" href={`/collections/${collection.handle}`}>
+                {collection.image?.url ? (
+                  <img
+                    src={collection.image.url}
+                    alt={collection.image.altText ?? collection.title}
+                    loading="lazy"
+                  />
+                ) : (
+                  <span class="card__placeholder" />
+                )}
+                <span class="card__title">{collection.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </main>
+</Layout>
+
+<style>
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+  .title {
+    font-size: 1.75rem;
+    margin: 0 0 1.5rem;
+  }
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .card img,
+  .card__placeholder {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: #fafafa;
+  }
+  .card__title {
+    display: block;
+    padding: 0.6rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .empty {
+    color: #777;
+  }
+</style>
