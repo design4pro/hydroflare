@@ -1,0 +1,32 @@
+# Hydroflare local secrets.
+#
+# Copy this file to `.dev.vars` (gitignored) and fill in real values.
+# `.dev.vars` is read by:
+#   • `astro dev` / Cloudflare adapter  → `Astro.locals.runtime.env` (local SSR)
+#   • `dotenv` in `codegen.ts` + `scripts/*.ts`
+# Keep it out of git (it already is). Never commit real tokens.
+# Full runbook: docs/phase-0-setup.md
+
+# ─────────────────────────── Storefront API (Phase 0) ───────────────────────────
+# Shop domain — your *.myshopify.com domain (scheme + trailing slash are stripped).
+SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
+# Storefront API public access token.
+# Shopify Admin → Apps → Develop apps (or Sales channels) → your app →
+#   "Storefront API" → "Storefront API access token".
+# Created against API version 2026-04 (PLANS.md §5).
+SHOPIFY_STOREFRONT_PUBLIC_TOKEN=replace-with-your-storefront-public-access-token
+
+# Optional: a collection handle the `shopify:check` script targets directly.
+# Omit to auto-pick the first collection returned by the Storefront API.
+# SHOPIFY_TEST_COLLECTION_HANDLE=
+
+# ─────────────────────── Customer Accounts API (Phase 10) ───────────────────────
+# Uncomment once you create the Customer Accounts app (docs/phase-0-setup.md).
+# SHOPIFY_CUSTOMER_ACCOUNTS_CLIENT_ID=
+# SHOPIFY_CUSTOMER_ACCOUNTS_CLIENT_SECRET=
+# Local: your `cloudflared` tunnel URL; preview/prod: the deployed callback URI.
+# SHOPIFY_CUSTOMER_ACCOUNTS_REDIRECT_URL=https://<tunnel>.trycloudflare.com/account/callback
+
+# ───────────────────────── Cookie signing (optional) ───────────────────────────
+# HMAC cookie-signing secret — only if tamper-detection is wanted (PLANS.md §10).
+# COOKIE_SIGNING_SECRET=
