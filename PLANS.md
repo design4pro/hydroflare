@@ -477,20 +477,24 @@ Legend: ☐ task · **AC** = acceptance criteria · **Dep** = depends on.
 
 #### Phase 0 — Catalog, environment & tooling setup
 
-> **Status:** code/tooling ✅ done; the four external Shopify steps + Cloudflare
-> secrets ⏳ pending human access — see **`docs/phase-0-setup.md`** for the full
-> runbook. `astro check` + Vitest + build are already green; `codegen` +
-> `shopify:check` activate once the Storefront token is added to `.dev.vars`.
+> **Status:** ✅ **AC met** — `codegen` runs + committed tsc-clean types; one live
+> collection fetch returns typed data (`shopify:check` ✅ verified against the real
+> store); `astro check` + Vitest + build green; CI skeleton wired. Cloudflare
+> `hydroflare` Worker deployed (SESSION KV bound, SSR verified) at
+> https://hydroflare.design4pro.workers.dev. Remaining (Shopify Admin + per-env
+> secrets) ⏳ per `docs/phase-0-setup.md`: catalog seeding, Customer Accounts app,
+> Markets, and the Worker/GitHub secrets.
 
-- ⏳ Confirm Shopify store access + create a **Storefront API public access token** (Storefront API `2026-04`).
-- ⏳ **Seed the catalog** (sparse store) with enough test data to exercise every UI state: ≥ 2 collections, ≥ 12 products with **multiple variants** (sizes), **colour-sibling variants**, ≥ 1 **sold-out** size, **media galleries** (front/back images), and representative **metafields** (material/care/fit).
+- ✅ Confirm Shopify store access + create a **Storefront API public access token** (Storefront API `2026-04`). *(token + domain in `.dev.vars`; live fetch verified)*
+- ⏳ **Seed the catalog** (sparse store) with enough test data to exercise every UI state: ≥ 2 collections, ≥ 12 products with **multiple variants** (sizes), **colour-sibling variants**, ≥ 1 **sold-out** size, **media galleries** (front/back images), and representative **metafields** (material/care/fit). *(store still has default starter data — frontpage/automated-collection/hydrogen, 1 product)*
 - ⏳ Create the **Customer Accounts app** (prod + stable-preview + `cloudflared` localhost callback URIs).
 - ⏳ Configure Shopify **Markets** for multi-currency.
-- ✅ Add `codegen.ts`; wire `npm run codegen`; emit initial types into `src/lib/shopify/generated/`. *(config + script done; first run needs the token — see `docs/phase-0-setup.md` §7)*
+- ✅ Add `codegen.ts`; wire `npm run codegen`; emit initial types into `src/lib/shopify/generated/`. *(committed, tsc-clean — see §24 @ts-nocheck note)*
 - ✅ Add `vitest.config.ts` + `playwright.config.ts`; create `src/fixtures/` with first fixtures. *(fixture `collection-by-handle.json` + contract test green)*
 - ✅ Add `.github/workflows/ci.yml` skeleton (check + codegen-drift + vitest + build). *(codegen-drift gated on the Shopify secret so the skeleton is green pre-token)*
-- ✅ Add `.dev.vars.example` (gitignored `.dev.vars`) + Cloudflare-secrets instructions. *(real `.dev.vars` + secrets ⏳ per runbook §5–6)*
-- ☐ **AC:** `codegen` runs ✅ (script wired); one live collection fetch returns typed data ✅ (`npm run shopify:check`, run post-token); CI skeleton green on a trivial PR ✅ (gates pass now; drift step activates with secrets).
+- ✅ Add `.dev.vars.example` (gitignored `.dev.vars`) + Cloudflare-secrets instructions. *(`.dev.vars` populated; Worker/GitHub secrets ⏳ per runbook §5–6)*
+- ✅ Bind **SESSION KV** + deploy **hydroflare** Worker (SSR verified).
+- ✅ **AC:** `codegen` runs ✅; one live collection fetch returns typed data ✅ (`shopify:check` verified); CI skeleton green on a trivial PR ✅.
 - **Dep:** Phase 1 (done).
 
 #### Phase 1 — Foundation ✅ (complete)
@@ -673,6 +677,7 @@ Resolved through a structured review (grilling) of the prior plan:
 ### Phase 0 implementation notes
 
 - **Codegen emits types only, not `TypedDocumentNode`s.** `@shopify/storefront-api-client`'s `.request(operation, …)` takes the operation as a GraphQL **string** (it stringifies it into `{ query }`), so codegen runs `typescript` + `typescript-operations` and queries stay authored as `/* GraphQL */`-annotated string constants in `src/lib/shopify/queries/` (plucked by codegen). One `<Name>Query` + `<Name>QueryVariables` pair per operation → `src/lib/shopify/generated/types.ts`.
+- **Generated file carries `// @ts-nocheck`** (prepended by the codegen `add` plugin). Codegen double-emits enums that operations reference (`CountryCode`/`CurrencyCode`) though the schema declares them once → duplicate-identifier under `tsc`; no config dedupes it. `enumsAsTypes` + `futureProofUnions` make enums `isolatedModules`-safe string unions. Suppressing internal checks of generated output is the standard fix — consumers are still type-checked at import sites, and schema-correctness is enforced at generation + the `git diff` drift check. **Do not strip the banner** without first resolving the duplicate.
 - **Schema source = live introspection** of `https://{domain}/api/2026-04/graphql.json` (schema is API-version scoped, identical across stores, so introspection is fine). `npm run codegen` reads the token from `.dev.vars`; CI injects it via secret.
 - **CI codegen-drift gate is secret-gated.** Until the Storefront token is a repo secret, the drift step is skipped so the skeleton is green on a trivial PR; it activates once secrets are present (`docs/phase-0-setup.md` §7). Drift checks committed `generated/types.ts` only.
 - **`scripts/` excluded from `astro check`.** Verification scripts (`scripts/check-storefront.ts`) import codegen output that doesn't exist until `npm run codegen` runs; they're exercised via `tsx` / CI, not `tsc`. Un-exclude once a workflow for typing them is added.
