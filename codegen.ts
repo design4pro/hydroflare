@@ -45,7 +45,22 @@ const config: CodegenConfig = {
   documents: ['src/lib/shopify/queries/**/*.ts'],
   generates: {
     'src/lib/shopify/generated/types.ts': {
-      plugins: ['typescript', 'typescript-operations'],
+      plugins: [
+        // Suppress internal tsc checking of generated output. The Storefront
+        // schema is clean (CountryCode/CurrencyCode appear once), but codegen
+        // double-emits enums that operations reference → duplicate-identifier
+        // errors under tsc; no config knob dedupes it. Consumers still get fully
+        // type-checked at their import sites; correctness vs the schema is
+        // enforced at generation time + the `git diff` drift check.
+        {
+          add: {
+            content:
+              '// @ts-nocheck\n/* eslint-disable */\n// GENERATED — do not edit. Produced by `npm run codegen` from the Storefront API 2026-04 schema. See codegen.ts.',
+          },
+        },
+        'typescript',
+        'typescript-operations',
+      ],
     },
   },
   config: {
@@ -53,6 +68,12 @@ const config: CodegenConfig = {
     // result + variables pairs, no DocumentNode objects.
     avoidOptionals: false,
     skipTypename: false,
+    // Emit enums as string-literal union types, not TS `enum`:
+    // `isolatedModules`/bundler-safe (no const-enum re-export hazards).
+    enumsAsTypes: true,
+    // Forward-compat: append `| string` so newly-added schema enum values don't
+    // break the build between regenerations.
+    futureProofUnions: true,
   },
   // Fail loud on schema/document mismatch instead of emitting partial types.
   ignoreNoDocuments: false,
