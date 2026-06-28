@@ -1,0 +1,152 @@
+{
+  "data": {
+    "collection": {
+      "id": "gid://shopify/Collection/10291712",
+      "handle": "men-jackets-coats",
+      "title": "Jackets & Coats",
+      "description": "Men's jackets and coats.",
+      "image": {
+        "url": "https://cdn.shopify.com/s/files/1/0000/0001/collections/men-jackets.jpg",
+        "altText": "Men's jackets and coats",
+        "width": 1600,
+        "height": 1067
+      },
+      "products": {
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false,
+          "startCursor": "eyJsYXN0X2lkIjoiNDQwMzE1NjUwNjUzMiIsImxhc3RfdmFsdWUiOiI0NDAzMTU2NTA2NTMyIn0=",
+          "endCursor": "eyJsYXN0X2lkIjoiNDQwMzE1NjUwNjYwNiIsImxhc3RfdmFsdWUiOiI0NDAzMTU2NTA2NjA2In0="
+        },
+        "nodes": [
+          {
+            "id": "gid://shopify/Product/4403156506532",
+            "handle": "detroit-jacket",
+            "title": "Detroit Jacket",
+            "productType": "Jacket",
+            "tags": ["mens", "outerwear", "jacket"],
+            "availableForSale": true,
+            "priceRange": {
+              "minVariantPrice": { "amount": "260.00", "currencyCode": "USD" },
+              "maxVariantPrice": { "amount": "260.00", "currencyCode": "USD" }
+            },
+            "featuredImage": {
+              "url": "https://cdn.shopify.com/s/files/1/0000/0001/products/detroit-jacket-black-front.jpg",
+              "altText": "Detroit Jacket - Black",
+              "width": 1000,
+              "height": 1500
+            },
+            "media": {
+              "nodes": [
+                {
+                  "alt": "Detroit Jacket - Black - front",
+                  "previewImage": {
+                    "url": "https://cdn.shopify.com/s/files/1/0000/0001/products/detroit-jacket-black-front.jpg",
+                    "width": 1000,
+                    "height": 1500
+                  }
+                },
+                {
+                  "alt": "Detroit Jacket - Black - back",
+                  "previewImage": {
+                    "url": "https://cdn.shopify.com/s/files/1/0000/0001/products/detroit-jacket-black-back.jpg",
+                    "width": 1000,
+                    "height": 1500
+                  }
+                }
+              ]
+            },
+            "options": [
+              { "id": "gid://shopify/ProductOption/1", "name": "Size", "values": ["S", "M", "L", "XL"] },
+              { "id": "gid://shopify/ProductOption/2", "name": "Color", "values": ["Black", "Hamilton Brown"] }
+            ],
+            "variants": {
+              "nodes": [
+                {
+                  "id": "gid://shopify/ProductVariant/1001",
+                  "title": "S / Black",
+                  "availableForSale": true,
+                  "quantityAvailable": 8,
+                  "selectedOptions": [
+                    { "name": "Size", "value": "S" },
+                    { "name": "Color", "value": "Black" }
+                  ],
+                  "price": { "amount": "260.00", "currencyCode": "USD" }
+                },
+                {
+                  "id": "gid://shopify/ProductVariant/1002",
+                  "title": "M / Black",
+                  "availableForSale": false,
+                  "quantityAvailable": 0,
+                  "selectedOptions": [
+                    { "name": "Size", "value": "M" },
+                    { "name": "Color", "value": "Black" }
+                  ],
+                  "price": { "amount": "260.00", "currencyCode": "USD" }
+                },
+                {
+                  "id": "gid://shopify/ProductVariant/1003",
+                  "title": "L / Black",
+                  "availableForSale": true,
+                  "quantityAvailable": 5,
+                  "selectedOptions": [
+                    { "name": "Size", "value": "L" },
+                    { "name": "Color", "value": "Black" }
+                  ],
+                  "price": { "amount": "260.00", "currencyCode": "USD" }
+                }
+              ]
+            }
+          },
+          {
+            "id": "gid://shopify/Product/4403156506606",
+            "handle": "aviator-hat",
+            "title": "Aviator Hat",
+            "productType": "Hat",
+            "tags": ["mens", "accessories", "hat"],
+            "availableForSale": true,
+            "priceRange": {
+              "minVariantPrice": { "amount": "60.00", "currencyCode": "USD" },
+              "maxVariantPrice": { "amount": "60.00", "currencyCode": "USD" }
+            },
+            "featuredImage": {
+              "url": "https://cdn.shopify.com/s/files/1/0000/0001/products/aviator-hat-brown-front.jpg",
+              "altText": "Aviator Hat - Hamilton Brown",
+              "width": 1000,
+              "height": 1500
+            },
+            "media": {
+              "nodes": [
+                {
+                  "alt": "Aviator Hat - Hamilton Brown - front",
+                  "previewImage": {
+                    "url": "https://cdn.shopify.com/s/files/1/0000/0001/products/aviator-hat-brown-front.jpg",
+                    "width": 1000,
+                    "height": 1500
+                  }
+                }
+              ]
+            },
+            "options": [
+              { "id": "gid://shopify/ProductOption/3", "name": "Color", "values": ["Hamilton Brown"] }
+            ],
+            "variants": {
+              "nodes": [
+                {
+                  "id": "gid://shopify/ProductVariant/2001",
+                  "title": "Default / Hamilton Brown",
+                  "availableForSale": true,
+                  "quantityAvailable": 20,
+                  "selectedOptions": [
+                    { "name": "Color", "value": "Hamilton Brown" }
+                  ],
+                  "price": { "amount": "60.00", "currencyCode": "USD" }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

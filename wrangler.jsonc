@@ -1,0 +1,20 @@
+{
+  // Cloudflare Workers config for the @astrojs/cloudflare adapter.
+  // Astro 6+: `main` is the adapter's unified entrypoint (handles both
+  // `astro dev` and deploy), NOT the pre-build dist/_worker.js path.
+  // Astro auto-provisions the IMAGES + SESSION bindings on deploy.
+  "name": "hydroflare",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "assets": {
+    "directory": "./dist"
+  },
+  // Astro sessions are enabled by the adapter, which auto-injects a `SESSION`
+  // KV binding but needs the namespace id from us. Created via
+  // `wrangler kv namespace create hydroflare-session`. (PLANS.md §5 cookies are
+  // separate httpOnly cookies; this KV backs the adapter's session support.)
+  "kv_namespaces": [
+    { "binding": "SESSION", "id": "00483cfa916b4d3a9b27d8f9cc1fb4c4" }
+  ]
+}

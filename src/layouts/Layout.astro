@@ -1,88 +1,23 @@
 ---
-import { gql } from "@shopify/hydrogen";
-import "../styles/cart.css";
-import Navbar from "../components/Navbar.astro";
-import CartDrawer from "../components/CartDrawer.astro";
+import '../styles/global.css';
 
 interface Props {
   title?: string;
 }
-const { title = "Hydroflare" } = Astro.props;
 
-// Resolve ShopAnalytics on the server (shopId must be a Shopify Shop GID).
-const SHOP_QUERY = gql(`
-  query ShopAnalytics {
-    shop {
-      id
-    }
-  }
-`);
-const { data: shopData } = await Astro.locals.storefront.graphql(SHOP_QUERY);
-const analyticsShop = {
-  shopId: shopData?.shop?.id ?? "",
-  acceptedLanguage: "EN",
-  currency: "USD",
-  hydrogenSubchannelId: import.meta.env.PUBLIC_STOREFRONT_ID,
-};
+const { title = 'Hydroflare' } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <!-- Standard Actions runtime: powers the cart event system + window.Shopify.actions.openCart(). -->
-    <script
-      is:inline
-      type="module"
-      src="https://cdn.shopify.com/storefront/standard-actions.js"
-      crossorigin="anonymous"></script>
   </head>
   <body>
-    <Navbar />
     <slot />
-    <CartDrawer />
-
-    <!-- Server-resolved shop analytics, bridged to client scripts. -->
-    <div id="analytics-shop" data-shop={JSON.stringify(analyticsShop)} hidden></div>
-
-    <script>
-      import {
-        initAnalyticsFromDom,
-        getAnalytics,
-        AnalyticsEvent,
-      } from "../lib/analytics";
-
-      const shop = initAnalyticsFromDom();
-      const analytics = getAnalytics();
-      if (analytics && shop) {
-        analytics.publish(AnalyticsEvent.PAGE_VIEWED, {
-          url: window.location.href,
-          shop,
-        });
-      }
-    </script>
   </body>
 </html>
-
-<style is:global>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-  }
-  body {
-    font-family:
-      ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-      sans-serif;
-    color: #1a1a1a;
-    line-height: 1.5;
-  }
-  img {
-    max-width: 100%;
-  }
-</style>

@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* Design tokens — see PLANS.md §1 (measured tokens) & §2 (Tailwind v4 setup). */
+@theme {
+  /* Type: system stack — real Helvetica on Apple, Arial elsewhere (0 KB payload). */
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Palette: pure black-on-white workwear aesthetic, no accent colors. */
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-line: #e6e6e6; /* hairline borders */
+  --color-muted: #6b6b6b; /* secondary text */
+
+  /* Type scale (measured). */
+  --text-product: 0.875rem; /* 14px — product name */
+  --text-h2: 3rem; /* 48px — homepage section heading */
+  --text-display: 5rem; /* 80px — PLP H1 */
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-size: 1rem; /* 16px */
+    line-height: 1.5; /* 24px */
+    font-weight: 400; /* 400 and 700 only — see PLANS.md §1 */
+  }
+  /* Carhartt workwear aesthetic: square corners everywhere.
+     Utilities (e.g. rounded-*) still override this if ever needed. */
+  *,
+  ::before,
+  ::after {
+    border-radius: 0;
+  }
+}
