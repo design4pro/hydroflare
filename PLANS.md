@@ -683,6 +683,14 @@ Resolved through a structured review (grilling) of the prior plan:
 - **`scripts/` excluded from `astro check`.** Verification scripts (`scripts/check-storefront.ts`) import codegen output that doesn't exist until `npm run codegen` runs; they're exercised via `tsx` / CI, not `tsc`. Un-exclude once a workflow for typing them is added.
 - **`generated/` is a committed artifact**, not gitignored — the drift check (`codegen && git diff --exit-code`) requires it tracked.
 
+### Branch reconciliation — Hydrogen superseded
+
+`develop` briefly carried a parallel storefront built on **`@shopify/hydrogen` + `@astrojs/node`** (standalone Node, `gql.tada` for queries), merged via PR #1 (`feat/hydrogen-storefront-setup`). That direction **contradicts** this plan: §24 item 8 deliberately chose the **direct Storefront API client + GraphQL Codegen + Cloudflare Workers** stack over Hydrogen (the "Storefront API proxy mandatory" change applies to Hydrogen only — not our direct client).
+
+**Decision:** the PLANS.md architecture is authoritative; the Hydrogen storefront is **superseded**. Reconciled with a `-s ours` merge of `origin/develop` into `feature/clone` (Hydrogen content dropped; its commits retained in history for traceability), then PR #2 merged `feature/clone` → `develop`. `develop` now carries the PLANS.md stack (`ci.yml`, `@astrojs/cloudflare`, `@shopify/storefront-api-client`, codegen) and CI runs green on push.
+
+**Do not reintroduce Hydrogen.** The chosen stack is `@shopify/storefront-api-client` + codegen (§5) on `@astrojs/cloudflare` (§4). If a Hydrogen capability is ever wanted, revisit §24 item 8 first.
+
 ---
 
 ## 25. References
